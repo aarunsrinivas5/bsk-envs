@@ -115,15 +115,6 @@ class HohmannTransfer1DOFSimulator(SimulationBaseClass.SimBaseClass):
 
 
 
-delta_v = 2338.2695947442226
-T1 = 19082680683684
-
-sim = HohmannTransfer1DOFSimulator(render_mode='human')
-sim.run(delta_v)
-while sim.simulationTime < T1:
-    sim.run(0)
-
-
 
 
 

@@ -1,7 +1,7 @@
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-from sim import InterplanetaryTransfer3DOFSimulator
+from bsk_transfers.interplanetary_transfer.medium.sim import InterplanetaryTransfer3DOFSimulator
 
 
 THRESHOLD = 50e6 * 1000

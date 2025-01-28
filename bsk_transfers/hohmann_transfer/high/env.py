@@ -2,7 +2,7 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 from Basilisk.architecture import astroConstants
-from .sim import HohmannTransfer6DOFSimulator
+from bsk_transfers.hohmann_transfer.high.sim import HohmannTransfer6DOFSimulator
 
 
 THRESHOLD = 1000 * 1000

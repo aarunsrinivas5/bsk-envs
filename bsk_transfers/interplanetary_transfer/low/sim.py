@@ -165,16 +165,6 @@ class InterplanetaryTransfer1DOFSimulator(SimulationBaseClass.SimBaseClass):
 
 
 
-delta_v = 2936.7657449941544
-T1 = 22387598288774192
-
-sim = InterplanetaryTransfer1DOFSimulator(render_mode='human')
-
-sim.run(delta_v)
-while sim.simulationTime < T1:
-    sim.run(0)
-
-
 
 
 

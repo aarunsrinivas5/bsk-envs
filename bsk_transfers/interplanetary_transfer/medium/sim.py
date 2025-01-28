@@ -164,18 +164,6 @@ class InterplanetaryTransfer3DOFSimulator(SimulationBaseClass.SimBaseClass):
 
 
 
-delta_v = 2936.7657449941544
-T1 = 22387598288774192
-
-sim = InterplanetaryTransfer3DOFSimulator(render_mode='human')
-obs = sim.init()
-
-delta_v = delta_v * obs['v_S_N'] / np.linalg.norm(obs['v_S_N'])
-sim.run(delta_v)
-while sim.simulationTime < T1:
-    sim.run([0, 0, 0])
-
-
 
 
 

@@ -234,16 +234,6 @@ class InterplanetaryTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
 
 
 
-delta_v = 2936.7657449941544
-
-sim = InterplanetaryTransfer6DOFSimulator(render_mode='human')
-
-headings = np.load('headings_interplanetary.npy')
-sim.run([delta_v, *headings[0]])
-for i, heading in enumerate(headings[1:]):
-    sim.run(np.concatenate(([0], heading)))
-
-
 
 
 

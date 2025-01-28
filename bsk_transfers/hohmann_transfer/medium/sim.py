@@ -117,17 +117,6 @@ class HohmannTransfer3DOFSimulator(SimulationBaseClass.SimBaseClass):
 
 
 
-delta_v = 2338.2695947442226
-T1 = 19082680683684
-
-sim = HohmannTransfer3DOFSimulator(render_mode='human')
-obs = sim.init()
-
-delta_v = delta_v * obs['v_S_N'] / np.linalg.norm(obs['v_S_N'])
-sim.run(delta_v)
-while sim.simulationTime < T1:
-    sim.run([0, 0, 0])
-
 
 
 

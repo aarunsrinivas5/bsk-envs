@@ -2,7 +2,7 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 from Basilisk.architecture import astroConstants
-from .sim import HohmannTransfer1DOFSimulator
+from bsk_transfers.hohmann_transfer.medium.sim import HohmannTransfer3DOFSimulator
 
 
 THRESHOLD = 1000 * 1000
@@ -59,7 +59,7 @@ class HohmannTransfer3DOFEnv(gym.Env):
     def reset(self, seed=None, options={}):
         if self.simulator is not None:
             del self.simulator
-        self.simulator = HohmannTransfer1DOFSimulator(
+        self.simulator = HohmannTransfer3DOFSimulator(
             render_mode=self.render_mode
         )
         self.obs, info = self.simulator.init()

@@ -1,9 +1,9 @@
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-from .low.env import HohmannTransfer1DOFEnv
-from .medium.env import HohmannTransfer3DOFEnv
-from .high.env import HohmannTransfer6DOFEnv
+from bsk_transfers.hohmann_transfer.low.env import HohmannTransfer1DOFEnv
+from bsk_transfers.hohmann_transfer.medium.env import HohmannTransfer3DOFEnv
+from bsk_transfers.hohmann_transfer.high.env import HohmannTransfer6DOFEnv
 
 class HohmannTransferEnv(gym.Env):
 

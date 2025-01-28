@@ -219,17 +219,6 @@ class HohmannTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
 
 
 
-# sim = Hohmann6DOFSimulator()
-
-# headings = np.load('headings.npy')
-# for i, heading in enumerate(headings):
-#     sim.run(np.concatenate(([0], heading)))
-# sim.run(np.concatenate(([2338.2695947442226], heading)))
-# for i in range(1000):
-#     sim.run(np.concatenate(([0], heading)))
-
-
-
 
 
 

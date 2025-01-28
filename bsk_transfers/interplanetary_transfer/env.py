@@ -1,9 +1,9 @@
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-from interplanetary_transfer.low.env import InterplanetaryTransfer1DOFEnv
-from interplanetary_transfer.medium.env import InterplanetaryTransfer3DOFEnv
-from interplanetary_transfer.high.env import InterplanetaryTransfer6DOFEnv
+from bsk_transfers.interplanetary_transfer.low.env import InterplanetaryTransfer1DOFEnv
+from bsk_transfers.interplanetary_transfer.medium.env import InterplanetaryTransfer3DOFEnv
+from bsk_transfers.interplanetary_transfer.high.env import InterplanetaryTransfer6DOFEnv
 
 class InterplanetaryTransferEnv(gym.Env):
 
