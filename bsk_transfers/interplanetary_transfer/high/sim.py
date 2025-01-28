@@ -174,7 +174,7 @@ class InterplanetaryTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
                 trueOrbitColorList=[vizSupport.toRGBA255('turquoise')],
                 thrEffectorList=self.thrusterSet,
                 thrColors=vizSupport.toRGBA255("red"),
-                saveFile=__file__
+                saveFile='-'.join(__file__.split('/')[-3:])
             )
             vizSupport.setActuatorGuiSetting(viz, showThrusterLabels=True)
             viz.settings.mainCameraTarget = 'sun'

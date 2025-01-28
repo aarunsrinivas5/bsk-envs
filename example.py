@@ -5,7 +5,7 @@ env = HohmannTransferEnv(
     fidelity='low',
     max_steps=100, 
     max_delta_v=10000, 
-    render_mode=None
+    render_mode='human'
 )
 
 state, _ = env.reset()

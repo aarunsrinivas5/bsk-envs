@@ -163,7 +163,7 @@ class HohmannTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
 
         if self.render_mode:
             viz = vizSupport.enableUnityVisualization(self, self.simTaskName,  self.scObject
-                                                        , saveFile=__file__
+                                                        , saveFile='-'.join(__file__.split('/')[-3:])
                                                         , thrEffectorList=self.thrusterSet
                                                         , thrColors=vizSupport.toRGBA255("red")
                                                         )

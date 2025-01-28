@@ -77,7 +77,7 @@ class HohmannTransfer1DOFSimulator(SimulationBaseClass.SimBaseClass):
         self.AddModelToTask(self.simTaskName, self.dataLog)
 
         if self.render_mode:
-            viz = vizSupport.enableUnityVisualization(self, self.simTaskName,  self.scObject, saveFile=__file__)
+            viz = vizSupport.enableUnityVisualization(self, self.simTaskName,  self.scObject, saveFile='-'.join(__file__.split('/')[-3:]))
             vizSupport.setActuatorGuiSetting(viz, showThrusterLabels=True)
             viz.settings.mainCameraTarget = 'earth'
             viz.settings.trueTrajectoryLinesOn = 1
