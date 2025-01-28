@@ -1,7 +1,6 @@
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-from stable_baselines3 import PPO
 from hohmann_transfer.low.env import HohmannTransfer1DOFEnv
 from hohmann_transfer.medium.env import HohmannTransfer3DOFEnv
 from hohmann_transfer.high.env import HohmannTransfer6DOFEnv
