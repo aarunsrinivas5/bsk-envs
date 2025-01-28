@@ -62,16 +62,16 @@ class HohmannTransfer1DOFEnv(gym.Env):
         self.simulator = HohmannTransfer1DOFSimulator(
             render_mode=self.render_mode
         )
-        self.obs, info = self.simulator.init()
+        self.obs = self.simulator.init()
         self.step_count = 0
         state = self._get_state()
-        return state, info
+        return state, self.obs
     
     def step(self, action):
-        self.obs, info = self.simulator.run(action * self.max_delta_v)
+        self.obs = self.simulator.run(action * self.max_delta_v)
         self.total_delta_v += abs(action * self.max_delta_v)
         self.step_count += 1
         next_state = self._get_state()
         reward = self._get_reward(action)
         done = self._get_terminal()
-        return next_state, reward, done, False, info
+        return next_state, reward, done, False, self.obs
