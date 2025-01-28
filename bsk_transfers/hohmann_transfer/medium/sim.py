@@ -91,7 +91,7 @@ class HohmannTransfer3DOFSimulator(SimulationBaseClass.SimBaseClass):
         return {
             'r_S_N': r_S_N,
             'v_S_N': v_S_N
-        }
+        }, {}
 
 
     def run(self, action):
@@ -112,7 +112,7 @@ class HohmannTransfer3DOFSimulator(SimulationBaseClass.SimBaseClass):
         return {
             'r_S_N': r_S_N,
             'v_S_N': v_S_N
-        }
+        }, {}
 
 
 

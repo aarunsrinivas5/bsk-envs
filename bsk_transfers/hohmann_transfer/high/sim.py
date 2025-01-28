@@ -184,7 +184,7 @@ class HohmannTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
             'v_S_N': v_S_N,
             'sigma_S_N': sigma_S_N,
             'omega_S_N': omega_S_N
-        }
+        }, {}
 
 
     def run(self, action):
@@ -214,7 +214,7 @@ class HohmannTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
             'v_S_N': v_S_N,
             'sigma_S_N': sigma_S_N,
             'omega_S_N': omega_S_N
-        }
+        }, {}
 
 
 

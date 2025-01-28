@@ -36,7 +36,7 @@ class HohmannTransfer3DOFEnv(gym.Env):
     def _get_reward(self, action):
         R = np.linalg.norm(self.obs['r_S_N'])
         distance_penalty = abs(R - R2) / R2
-        delta_v_penalty = abs(action[0])
+        delta_v_penalty = np.linalg.norm(action)
         penalty = distance_penalty + delta_v_penalty
         if self.step_count == self.max_steps:
             return distance_penalty * 10
@@ -69,7 +69,7 @@ class HohmannTransfer3DOFEnv(gym.Env):
     
     def step(self, action):
         self.obs, info = self.simulator.run(action * self.max_delta_v)
-        self.total_delta_v += abs(action * self.max_delta_v)
+        self.total_delta_v += np.linalg.norm(action * self.max_delta_v)
         self.step_count += 1
         next_state = self._get_state()
         reward = self._get_reward(action)

@@ -34,9 +34,9 @@ class HohmannTransfer1DOFEnv(gym.Env):
         return np.concatenate((r, v, dv))
     
     def _get_reward(self, action):
-        R = np.linalg.norm(self.obs[:3])
+        R = np.linalg.norm(self.obs['r_S_N'])
         distance_penalty = abs(R - R2) / R2
-        delta_v_penalty = abs(action[0])
+        delta_v_penalty = abs(action)
         penalty = distance_penalty + delta_v_penalty
         if self.step_count == self.max_steps:
             return distance_penalty * 10
@@ -47,7 +47,7 @@ class HohmannTransfer1DOFEnv(gym.Env):
         return -penalty
     
     def _get_terminal(self):
-        R = np.linalg.norm(self.obs[:3])
+        R = np.linalg.norm(self.obs['r_S_N'])
         if self.step_count == self.max_steps:
             return True
         if R < RMIN:
