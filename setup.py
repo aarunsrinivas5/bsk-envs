@@ -1,12 +1,11 @@
-from setuptools import setup
-
+from setuptools import setup, find_packages
 setup(
     name='bsk-transfers',
     version='0.0.2',
-    keywords='basilisk, hohmann, interplanetary, transfer',
+    keywords='basilisk, hohmann, interplanetary, transfers',
     url='https://github.com/aarunsrinivas5/bsk-transfers.git',
     description='Gymnasium environments built on top of Basilisk for simulating transfers',
-    packages=['bsk-transfers'],
+    packages=find_packages(),
     install_requires=[
         'numpy',
         'gymnasium'
