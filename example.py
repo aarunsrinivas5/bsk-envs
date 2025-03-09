@@ -1,13 +1,21 @@
 import numpy as np
-from bsk_transfers import HohmannTransferEnv
+import gymnasium as gym
+import bsk_envs
+from stable_baselines3 import PPO
 
-env = HohmannTransferEnv(
-    fidelity='low',
-    max_steps=100, 
-    max_delta_v=10000, 
-    render_mode='human'
-)
 
+env = gym.make('OrbitDiscovery3DOF-v0', render_mode='human')
+model = PPO.load(f'baselines/orbit_discovery-medium', env)
+
+done = False
 state, _ = env.reset()
-for i in range(200):
-    state, reward, done, _, info = env.step(0)
+total_reward = 0
+while not done:
+    action, _ = model.predict(state, deterministic=True)
+    state, reward, done, _, info = env.step(action)
+    total_reward += reward
+    env.render()
+env.close()
+
+
+

@@ -38,10 +38,11 @@ RMAX = R2 + THRESHOLD * 10
 
 class HohmannTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
 
-    def __init__(self, render_mode=None):
+    def __init__(self, grav_body='earth', render_mode=None):
         super(HohmannTransfer6DOFSimulator, self).__init__()
 
-        self.render_mode = render_mode
+        self.gravBody = grav_body
+        self.renderMode = render_mode
 
         self.simTaskName = "simTask"
         self.simProcessName = "simProcess"
@@ -61,8 +62,8 @@ class HohmannTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
         self.AddModelToTask(self.simTaskName, self.scObject)
 
         self.gravFactory = simIncludeGravBody.gravBodyFactory()
-        self.earth = self.gravFactory.createEarth()
-        self.earth.isCentralBody = True  # ensure this is the central gravitational body
+        self.gravBody = self.gravFactory.createBody(self.gravBody)
+        self.gravBody.isCentralBody = True  # ensure this is the central gravitational body
         self.gravFactory.addBodiesTo(self.scObject)
 
         oe = orbitalMotion.ClassicElements()
@@ -72,7 +73,7 @@ class HohmannTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
         oe.Omega = 48.2 * macros.D2R
         oe.omega = 347.8 * macros.D2R
         oe.f = 85.3 * macros.D2R
-        rN, vN = orbitalMotion.elem2rv(self.earth.mu, oe)
+        rN, vN = orbitalMotion.elem2rv(self.gravBody.mu, oe)
         self.scObject.hub.r_CN_NInit = rN  # m - r_CN_N
         self.scObject.hub.v_CN_NInit = vN  # m - v_CN_N
         self.scObject.hub.sigma_BNInit = [[0.0], [0.0], [0.0]]  # sigma_BN_B
@@ -161,7 +162,7 @@ class HohmannTransfer6DOFSimulator(SimulationBaseClass.SimBaseClass):
         self.mrpControl.vehConfigInMsg.subscribeTo(self.vcMsg)
         self.thrusterSet.cmdsInMsg.subscribeTo(self.thrOnTimeMsg)
 
-        if self.render_mode:
+        if self.renderMode:
             viz = vizSupport.enableUnityVisualization(self, self.simTaskName,  self.scObject
                                                         , saveFile='-'.join(__file__.split('/')[-3:])
                                                         , thrEffectorList=self.thrusterSet

@@ -37,18 +37,19 @@ RMIN = R1 - THRESHOLD
 RMAX = R2 + THRESHOLD * 10
 
 
-class HohmannTransfer1DOFSimulator(SimulationBaseClass.SimBaseClass):
+class HohmannTransfer3DOFSimulator(SimulationBaseClass.SimBaseClass):
 
-    def __init__(self, render_mode=None):
-        super(HohmannTransfer1DOFSimulator, self).__init__()
+    def __init__(self, grav_body='earth', render_mode=None):
+        super(HohmannTransfer3DOFSimulator, self).__init__()
 
-        self.render_mode = render_mode
+        self.gravBody = grav_body
+        self.renderMode = render_mode
 
         self.simTaskName = "simTask"
         self.simProcessName = "simProcess"
         dynProcess = self.CreateNewProcess(self.simProcessName)
 
-        self.simulationTimeStep = macros.sec2nano(10)
+        self.simulationTimeStep = macros.sec2nano(5 * 60)
         self.simulationTime = 0
         dynProcess.addTask(self.CreateNewTask(self.simTaskName, self.simulationTimeStep))
 
@@ -57,8 +58,8 @@ class HohmannTransfer1DOFSimulator(SimulationBaseClass.SimBaseClass):
         self.AddModelToTask(self.simTaskName, self.scObject)
 
         self.gravFactory = simIncludeGravBody.gravBodyFactory()
-        self.earth = self.gravFactory.createEarth()
-        self.earth.isCentralBody = True
+        self.gravBody = self.gravFactory.createBody(self.gravBody)
+        self.gravBody.isCentralBody = True
         self.gravFactory.addBodiesTo(self.scObject)
 
         oe = orbitalMotion.ClassicElements()
@@ -68,7 +69,7 @@ class HohmannTransfer1DOFSimulator(SimulationBaseClass.SimBaseClass):
         oe.Omega = 48.2 * macros.D2R
         oe.omega = 347.8 * macros.D2R
         oe.f = 85.3 * macros.D2R
-        r_S_N, v_S_N = orbitalMotion.elem2rv(self.earth.mu, oe)
+        r_S_N, v_S_N = orbitalMotion.elem2rv(self.gravBody.mu, oe)
         self.scObject.hub.r_CN_NInit = r_S_N 
         self.scObject.hub.v_CN_NInit = v_S_N
 
@@ -76,13 +77,14 @@ class HohmannTransfer1DOFSimulator(SimulationBaseClass.SimBaseClass):
         self.dataLog = self.scObject.scStateOutMsg.recorder(samplingTime)
         self.AddModelToTask(self.simTaskName, self.dataLog)
 
-        if self.render_mode:
+        if self.renderMode:
             viz = vizSupport.enableUnityVisualization(self, self.simTaskName,  self.scObject, saveFile='-'.join(__file__.split('/')[-3:]))
             vizSupport.setActuatorGuiSetting(viz, showThrusterLabels=True)
             viz.settings.mainCameraTarget = 'earth'
             viz.settings.trueTrajectoryLinesOn = 1
 
         self.InitializeSimulation()
+
 
     def init(self):
         r_S_N = np.array(self.scObject.hub.r_CN_NInit).reshape(-1)
@@ -94,12 +96,12 @@ class HohmannTransfer1DOFSimulator(SimulationBaseClass.SimBaseClass):
 
 
     def run(self, action):
+
         posRef = self.scObject.dynManager.getStateObject('hubPosition')
         velRef = self.scObject.dynManager.getStateObject('hubVelocity')
         
         v_S_N = unitTestSupport.EigenVector3d2np(velRef.getState())
-        v_Hat = v_S_N / np.linalg.norm(v_S_N)
-        v_S_N = v_S_N + v_Hat * action
+        v_S_N = v_S_N + action
         velRef.setState(unitTestSupport.np2EigenVectorXd(v_S_N))
 
         self.simulationTime += self.simulationTimeStep
@@ -112,6 +114,7 @@ class HohmannTransfer1DOFSimulator(SimulationBaseClass.SimBaseClass):
             'r_S_N': r_S_N,
             'v_S_N': v_S_N
         }
+
 
 
 

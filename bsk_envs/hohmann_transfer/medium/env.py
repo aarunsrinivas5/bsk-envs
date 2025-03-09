@@ -2,7 +2,7 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 from Basilisk.architecture import astroConstants
-from bsk_transfers.hohmann_transfer.medium.sim import HohmannTransfer3DOFSimulator
+from bsk_envs.hohmann_transfer.medium.sim import HohmannTransfer3DOFSimulator
 
 
 THRESHOLD = 1000 * 1000
@@ -13,6 +13,8 @@ RMIN = R1 - THRESHOLD
 RMAX = R2 + THRESHOLD * 10
 
 class HohmannTransfer3DOFEnv(gym.Env):
+
+    metadata = {'render_modes': ['human']}
 
     def __init__(self, max_steps=100, max_delta_v=10000, render_mode=None):
         super(HohmannTransfer3DOFEnv, self).__init__()
@@ -75,3 +77,8 @@ class HohmannTransfer3DOFEnv(gym.Env):
         reward = self._get_reward(action)
         done = self._get_terminal()
         return next_state, reward, done, False, self.obs
+    
+    def close(self):
+        if self.simulator is not None:
+            del self.simulator
+    

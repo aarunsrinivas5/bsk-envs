@@ -1,7 +1,7 @@
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-from bsk_transfers.interplanetary_transfer.low.sim import InterplanetaryTransfer1DOFSimulator
+from bsk_envs.interplanetary_transfer.medium.sim import InterplanetaryTransfer3DOFSimulator
 
 
 THRESHOLD = 50e6 * 1000
@@ -10,10 +10,12 @@ RM = 228e6 * 1000
 RMIN = RE - THRESHOLD
 RMAX = RM + THRESHOLD
 
-class InterplanetaryTransfer1DOFEnv(gym.Env):
+class InterplanetaryTransfer3DOFEnv(gym.Env):
+
+    metadata = {'render_modes': ['human']}
 
     def __init__(self, max_steps=100, max_delta_v=10000, render_mode=None):
-        super(InterplanetaryTransfer1DOFEnv, self).__init__()
+        super(InterplanetaryTransfer3DOFEnv, self).__init__()
         self.max_steps = max_steps
         self.max_delta_v = max_delta_v
         self.render_mode = render_mode
@@ -23,7 +25,7 @@ class InterplanetaryTransfer1DOFEnv(gym.Env):
         self.simulator = None
 
         self.observation_space = spaces.Box(low=-1e16, high=1e16, shape=(7,))
-        self.action_space = spaces.Box(-1, 1, shape=(1,))
+        self.action_space = spaces.Box(-1, 1, shape=(3,))
 
     def _get_state(self):
         r = (self.obs['r_S_N'] - self.obs['r_M_N']) / np.linalg.norm(self.obs['r_M_N'])
@@ -62,7 +64,7 @@ class InterplanetaryTransfer1DOFEnv(gym.Env):
     def reset(self, seed=None, options={}):
         if self.simulator is not None:
             del self.simulator
-        self.simulator = InterplanetaryTransfer1DOFSimulator(
+        self.simulator = InterplanetaryTransfer3DOFSimulator(
             render_mode=self.render_mode
         )
         self.obs = self.simulator.init()
@@ -72,24 +74,15 @@ class InterplanetaryTransfer1DOFEnv(gym.Env):
     
     def step(self, action):
         self.obs = self.simulator.run(action * self.max_delta_v)
-        self.total_delta_v += abs(action * self.max_delta_v)
+        self.total_delta_v += abs(np.linalg.norm(action * self.max_delta_v))
         self.step_count += 1
         next_state = self._get_state()
         reward = self._get_reward(action)
         done = self._get_terminal()
         return next_state, reward, done, False, {}
-
-
-# env = HohmannTransfer6DOFEnv(max_steps=200, render_mode='human')
-# env.reset()
-
-# headings = np.load('headings.npy')
-# for i, heading in enumerate(headings[:8]):
-#     env.step(np.concatenate(([0], heading)))
-# env.step(np.concatenate(([2338.2695947442226 / env.max_delta_v], headings[8])))
-# for i, heading in enumerate(headings[9:94]):
-#     env.step(np.concatenate(([0], heading)))
-# env.step(np.concatenate(([1405.036565025628 / env.max_delta_v], headings[94])))
-# for i, heading in enumerate(headings[95:]):
-#     env.step(np.concatenate(([0], heading)))
+    
+    def close(self):
+        if self.simulator is not None:
+            del self.simulator
+    
     

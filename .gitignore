@@ -1,3 +1,6 @@
 _VizFiles
 __pycache__
 *.egg-info
+logs
+dummy.py
+baselines

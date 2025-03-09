@@ -2,7 +2,7 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 from Basilisk.architecture import astroConstants
-from bsk_transfers.hohmann_transfer.low.sim  import HohmannTransfer1DOFSimulator
+from bsk_envs.hohmann_transfer.high.sim import HohmannTransfer6DOFSimulator
 
 
 THRESHOLD = 1000 * 1000
@@ -12,31 +12,35 @@ V2 = np.sqrt(astroConstants.MU_EARTH / R2)
 RMIN = R1 - THRESHOLD
 RMAX = R2 + THRESHOLD * 10
 
-class HohmannTransfer1DOFEnv(gym.Env):
+class HohmannTransfer6DOFEnv(gym.Env):
 
-    def __init__(self, max_steps=100, max_delta_v=10000, render_mode=None):
-        super(HohmannTransfer1DOFEnv, self).__init__()
+    metadata = {'render_modes': ['human']}
+
+    def __init__(self, max_steps=100, max_delta_v=10000, grav_body='earth', render_mode=None):
+        super(HohmannTransfer6DOFEnv, self).__init__()
         self.max_steps = max_steps
         self.max_delta_v = max_delta_v
+        self.grav_body = grav_body
         self.render_mode = render_mode
         self.total_delta_v = 0
         self.step_count = 0
         self.obs = None
         self.simulator = None
 
-        self.observation_space = spaces.Box(low=-1e16, high=1e16, shape=(7,))
-        self.action_space = spaces.Box(-1, 1, shape=(1,))
+        self.observation_space = spaces.Box(low=-1e16, high=1e16, shape=(13,))
+        self.action_space = spaces.Box(-1, 1, shape=(4,))
 
     def _get_state(self):
         r = self.obs['r_S_N'] / R2
         v = self.obs['v_S_N'] / V2
+        sigma, omega = self.obs['sigma_S_N'], self.obs['omega_S_N']
         dv = [self.total_delta_v / self.max_delta_v]
-        return np.concatenate((r, v, dv))
+        return np.concatenate((r, v, sigma, omega, dv))
     
     def _get_reward(self, action):
         R = np.linalg.norm(self.obs['r_S_N'])
         distance_penalty = abs(R - R2) / R2
-        delta_v_penalty = abs(action)
+        delta_v_penalty = abs(action[0])
         penalty = distance_penalty + delta_v_penalty
         if self.step_count == self.max_steps:
             return distance_penalty * 10
@@ -59,7 +63,8 @@ class HohmannTransfer1DOFEnv(gym.Env):
     def reset(self, seed=None, options={}):
         if self.simulator is not None:
             del self.simulator
-        self.simulator = HohmannTransfer1DOFSimulator(
+        self.simulator = HohmannTransfer6DOFSimulator(
+            grav_body=self.grav_body,
             render_mode=self.render_mode
         )
         self.obs = self.simulator.init()
@@ -68,10 +73,17 @@ class HohmannTransfer1DOFEnv(gym.Env):
         return state, self.obs
     
     def step(self, action):
-        self.obs = self.simulator.run(action * self.max_delta_v)
-        self.total_delta_v += abs(action * self.max_delta_v)
+        self.obs = self.simulator.run(
+            [action[0] * self.max_delta_v, *action[1:]]
+        )
+        self.total_delta_v += abs(action[0] * self.max_delta_v)
         self.step_count += 1
         next_state = self._get_state()
         reward = self._get_reward(action)
         done = self._get_terminal()
         return next_state, reward, done, False, self.obs
+    
+    def close(self):
+        if self.simulator is not None:
+            del self.simulator
+    
