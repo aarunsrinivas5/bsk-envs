@@ -29,7 +29,7 @@ class OrbitDiscovery3DOFEnv(gym.Env):
         self.simulator = None
 
         self.observation_space = spaces.Box(low=-np.inf, high=np.inf, shape=(6,))
-        self.action_space = spaces.Box(-0.1, 0.1, shape=(3,))
+        self.action_space = spaces.Box(-1.0, 1.0, shape=(3,))
 
     def _get_state(self):
         r = self.obs['r_S_N'] / self.radius
@@ -65,8 +65,8 @@ class OrbitDiscovery3DOFEnv(gym.Env):
         return state, self.obs
     
     def step(self, action):
-        self.obs = self.simulator.run(action)
-        self.total_delta_v += np.linalg.norm(action)
+        self.obs = self.simulator.run(action / 10)
+        self.total_delta_v += np.linalg.norm(action / 10)
         self.step_count += 1
         next_state = self._get_state()
         reward = self._get_reward()
