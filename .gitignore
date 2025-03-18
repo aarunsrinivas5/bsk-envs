@@ -4,3 +4,4 @@ __pycache__
 logs
 dummy.py
 baselines
+bsk_envs/low_thrust_transfer
